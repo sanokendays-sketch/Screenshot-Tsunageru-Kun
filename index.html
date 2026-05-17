@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>小さな道具｜スクショつなげるくん</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="page">
+    <header class="app-header">
+      <div class="brand-intro">
+        <img class="brand-icon" src="assets/kame-oyaji-icon.png" alt="カメおやじAI工房のアイコン">
+        <div>
+          <p class="series">カメおやじAI工房の小さな道具</p>
+          <h1>スクショつなげるくん</h1>
+          <p class="lead">複数のスクショを、説明しやすい1枚の画像にまとめます。</p>
+        </div>
+      </div>
+    </header>
+
+    <main class="app-shell">
+      <section class="safe-note" aria-label="安心表示">
+        画像はサーバーに送信されません。お使いのブラウザ内だけで処理します。
+      </section>
+
+      <section class="card upload-section" aria-labelledby="upload-title">
+        <div class="section-heading">
+          <span class="step">1</span>
+          <div>
+            <h2 id="upload-title">スクショをいれる</h2>
+            <p>まずはまとめたい画像を入れてください。</p>
+          </div>
+        </div>
+
+        <label class="drop-zone" id="dropZone" for="imageInput">
+          <input id="imageInput" type="file" accept="image/png,image/jpeg,image/webp" multiple>
+          <span class="drop-main">タップして画像をえらぶ</span>
+          <span class="drop-sub">複数枚まとめて選べます</span>
+          <span class="drop-pc">ドラッグ＆ドロップ、Ctrl+V / Cmd+V で貼り付けもできます</span>
+        </label>
+        <p class="message" id="message" role="status" aria-live="polite"></p>
+      </section>
+
+      <section class="card image-list-section" aria-labelledby="list-title">
+        <div class="section-heading">
+          <span class="step">2</span>
+          <div>
+            <h2 id="list-title">読み込んだ画像</h2>
+            <p>順番を変えたり、短いラベルを付けたりできます。</p>
+          </div>
+        </div>
+        <div class="empty-state" id="emptyState">まだ画像がありません。</div>
+        <ol class="image-list" id="imageList"></ol>
+      </section>
+
+      <section class="card controls" aria-labelledby="layout-title">
+        <div class="section-heading">
+          <span class="step">3</span>
+          <div>
+            <h2 id="layout-title">並べ方をえらぶ</h2>
+            <p>用途に合わせて見せ方を変えられます。</p>
+          </div>
+        </div>
+
+        <fieldset class="control-group">
+          <legend>並べ方</legend>
+          <div class="segmented">
+            <label><input type="radio" name="layout" value="vertical" checked><span>縦につなげる</span></label>
+            <label><input type="radio" name="layout" value="horizontal"><span>横につなげる</span></label>
+            <label><input type="radio" name="layout" value="grid"><span>2列グリッド</span></label>
+          </div>
+        </fieldset>
+
+        <fieldset class="control-group">
+          <legend>画像の間に入れる記号</legend>
+          <div class="segmented">
+            <label><input type="radio" name="marker" value="none"><span>なし</span></label>
+            <label><input type="radio" name="marker" value="arrow" checked><span>矢印</span></label>
+            <label><input type="radio" name="marker" value="number"><span>番号</span></label>
+            <label><input type="radio" name="marker" value="both"><span>矢印＋番号</span></label>
+          </div>
+        </fieldset>
+
+        <fieldset class="control-group">
+          <legend>背景色</legend>
+          <div class="swatches" id="backgroundSwatches">
+            <label><input type="radio" name="background" value="#f6eddc" checked><span style="--swatch:#f6eddc">クリーム</span></label>
+            <label><input type="radio" name="background" value="#ffffff"><span style="--swatch:#ffffff">白</span></label>
+            <label><input type="radio" name="background" value="#ecebe4"><span style="--swatch:#ecebe4">やわらかいグレー</span></label>
+            <label><input type="radio" name="background" value="#7b8542"><span style="--swatch:#7b8542">オリーブ</span></label>
+            <label><input type="radio" name="background" value="#decdb9"><span style="--swatch:#decdb9">淡いブラウン</span></label>
+            <label><input type="radio" name="background" value="#cbd9dc"><span style="--swatch:#cbd9dc">くすみブルー</span></label>
+          </div>
+        </fieldset>
+      </section>
+
+      <section class="card controls" aria-labelledby="adjust-title">
+        <div class="section-heading">
+          <span class="step">4</span>
+          <div>
+            <h2 id="adjust-title">見た目を調整する</h2>
+            <p>余白や角丸を少し整えるだけで、説明画像らしくなります。</p>
+          </div>
+        </div>
+
+        <div class="range-grid">
+          <label class="range-row">
+            <span>外側余白 <b id="outerPaddingValue">60px</b></span>
+            <input id="outerPadding" type="range" min="20" max="160" value="60">
+          </label>
+          <label class="range-row">
+            <span>画像の間隔 <b id="gapValue">70px</b></span>
+            <input id="gap" type="range" min="20" max="160" value="70">
+          </label>
+          <label class="range-row">
+            <span>角丸 <b id="radiusValue">18px</b></span>
+            <input id="radius" type="range" min="0" max="40" value="18">
+          </label>
+          <label class="range-row">
+            <span>スクショの大きさ <b id="scaleValue">85%</b></span>
+            <input id="scale" type="range" min="40" max="100" value="85">
+          </label>
+          <label class="range-row">
+            <span>記号の大きさ <b id="markerSizeValue">100%</b></span>
+            <input id="markerSize" type="range" min="70" max="150" value="100">
+          </label>
+        </div>
+
+        <div class="toggle-grid">
+          <label class="toggle"><input id="shadow" type="checkbox" checked><span>影あり</span></label>
+          <label class="toggle"><input id="alignSize" type="checkbox" checked><span>幅をそろえる</span></label>
+        </div>
+
+        <fieldset class="control-group">
+          <legend>記号の色</legend>
+          <div class="swatches compact-swatches" id="markerSwatches">
+            <label><input type="radio" name="markerColor" value="#77813d" checked><span style="--swatch:#77813d">オリーブ</span></label>
+            <label><input type="radio" name="markerColor" value="#a47751"><span style="--swatch:#a47751">やわらかい茶色</span></label>
+            <label><input type="radio" name="markerColor" value="#3f372c"><span style="--swatch:#3f372c">こげ茶</span></label>
+            <label><input type="radio" name="markerColor" value="#6f8f98"><span style="--swatch:#6f8f98">くすみブルー</span></label>
+            <label><input type="radio" name="markerColor" value="#b75c53"><span style="--swatch:#b75c53">やわらかい赤</span></label>
+          </div>
+        </fieldset>
+
+        <fieldset class="control-group">
+          <legend>矢印の形</legend>
+          <div class="segmented">
+            <label><input type="radio" name="arrowStyle" value="simple" checked><span>すっきり</span></label>
+            <label><input type="radio" name="arrowStyle" value="soft"><span>まるみ</span></label>
+            <label><input type="radio" name="arrowStyle" value="label"><span>ラベル風</span></label>
+            <label><input type="radio" name="arrowStyle" value="bold"><span>しっかり</span></label>
+          </div>
+        </fieldset>
+
+        <fieldset class="control-group size-mode">
+          <legend>出力サイズ</legend>
+          <div class="size-row">
+            <label>
+              <span>サイズ</span>
+              <select id="sizePreset">
+                <option value="auto" selected>自動サイズ</option>
+                <option value="note">Note見出し画像：1280 × 670</option>
+                <option value="x">X投稿・横長：1200 × 675</option>
+                <option value="instagramSquare">Instagram正方形：1080 × 1080</option>
+                <option value="instagramPortrait">Instagram縦長：1080 × 1350</option>
+                <option value="story">ストーリー・リール縦長：1080 × 1920</option>
+                <option value="ogp">ブログ・OGP横長：1200 × 630</option>
+                <option value="youtube">YouTubeサムネイル：1280 × 720</option>
+                <option value="pinterest">Pinterest縦長：1000 × 1500</option>
+                <option value="custom">カスタムサイズ</option>
+              </select>
+            </label>
+            <label class="custom-size">
+              <span>幅</span>
+              <input id="customWidth" type="number" min="320" max="4000" value="1200" inputmode="numeric">
+            </label>
+            <label class="custom-size">
+              <span>高さ</span>
+              <input id="customHeight" type="number" min="320" max="4000" value="900" inputmode="numeric">
+            </label>
+          </div>
+        </fieldset>
+      </section>
+
+      <section class="card preview-section" aria-labelledby="preview-title">
+        <div class="section-heading">
+          <span class="step">5</span>
+          <div>
+            <h2 id="preview-title">プレビュー</h2>
+            <p>設定を変えると自動で更新されます。</p>
+          </div>
+        </div>
+        <div class="preview-wrap">
+          <canvas id="previewCanvas" width="900" height="520" aria-label="変換後プレビュー"></canvas>
+        </div>
+      </section>
+
+      <section class="actions" aria-label="保存と共有">
+        <button class="primary-button" id="saveButton" type="button" disabled>画像を保存する</button>
+        <button class="secondary-button" id="shareButton" type="button" disabled>シェアする</button>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
